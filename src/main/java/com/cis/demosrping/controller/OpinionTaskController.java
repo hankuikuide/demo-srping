@@ -40,4 +40,10 @@ public class OpinionTaskController {
         System.out.println(result);
         return result;
     }
+    @RequestMapping(value = "/InsertOpinionTask", method = RequestMethod.POST)
+    public void InsertOpinionTask(OpinionTask task){
+        logger.debug("获取指定opinion" + task.toString());
+
+        service.InserOpinionTask(task);
+    }
 }

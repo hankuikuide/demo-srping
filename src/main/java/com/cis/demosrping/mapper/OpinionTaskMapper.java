@@ -11,4 +11,7 @@ public interface OpinionTaskMapper {
     OpinionTask selectOpinionTask(String id);
 
     List<OpinionTask> selectOpinionAll();
+
+    void InsertOpinionTask(OpinionTask task);
+
 }

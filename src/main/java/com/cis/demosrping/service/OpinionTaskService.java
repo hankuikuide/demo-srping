@@ -22,6 +22,11 @@ public class OpinionTaskService {
 
         return taskMapper.selectOpinionAll();
     }
+
+    public void InserOpinionTask(OpinionTask task)
+    {
+        taskMapper.InsertOpinionTask(task);
+    }
 }
 
 
