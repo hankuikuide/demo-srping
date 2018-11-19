@@ -15,4 +15,9 @@
       select ID, HOSPITAL_ID ,HOSPITAL_NAME
       from opn_task where rownum&lt;11
     </select>
+
+    <insert id = "InsertOpinionTask" parameterType="com.cis.demosrping.model.OpinionTask">
+      insert into opn_task(id,HOSPITAL_ID,HOSPITAL_NAME)
+      values(#{id},#{hospitalId},#{hospitalName})
+    </insert>
 </mapper>
