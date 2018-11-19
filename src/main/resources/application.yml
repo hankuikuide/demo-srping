@@ -1,0 +1,3 @@
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #配置mybatis打出日志
