@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cis.demosrping.mapper.OpinionTaskMapper">
-    <resultMap id="OpnTaskResultMap" type="com.cis.demosrping.model.OpinionTask" >
+    <resultMap id="OpnTaskResultMap" type="com.cis.demosrping.model.OpinionTaskHospitalResult" >
         <id column="ID" property="id"></id>
         <result column="HOSPITAL_ID" property="hospitalId"></result>
         <result column="HOSPITAL_NAME" property="hospitalName"></result>
@@ -14,6 +14,30 @@
     <select id = "selectOpinionAll" parameterType="String" resultMap="OpnTaskResultMap">
       select ID, HOSPITAL_ID ,HOSPITAL_NAME
       from opn_task where rownum&lt;11
+    </select>
+
+    <select id = "GetOpinionTaskHospitals" resultMap="OpnTaskResultMap">
+      select hospital.id HOSPITAL_ID, hospital.name HOSPITAL_NAME,ot.end_date,ot.re_end_date, #{month} month,
+      ot.Status,ot.version_no,ot.excel_date,ot.oper_name,
+      case when bh.hospital_id is null then 0 else 1 end IsReview
+      from dw_zd_hospital hospital
+        <choose>
+          <when test="#{regionMode}">
+              left join (select hospital_id,end_date,re_end_date,status, version_no, excel_date, oper_name from opn_task where task_type = 0 and month = #{month}) ot
+          </when>
+          <otherwise>
+              left join (select hospital_id,end_date,re_end_date,status, version_no, excel_date, oper_name  from opn_task where task_type = 0 and month = #{month} and bmi_code is null) ot
+          </otherwise>
+        </choose>
+        on hospital.id=ot.hospital_id left join (select hospital_id from DW_BILL b where b.ANDIT_MANU_STATUS in ('3','4') and b.table_par >='20150701' and table_par &lt;'20150731' GROUP BY b.hospital_id) bh on bh.hospital_id = hospital.id
+        <where>
+          <if test="hospitalIds.size>0">
+              and hospital.id in
+              <foreach collection="hospitalIds" item="item" index="index"
+                       open="(" separator="," close=")">#{item}</foreach>
+          </if>
+        </where>
+        order by length(hospital.id),hospital.id
     </select>
 
     <insert id = "InsertOpinionTask" parameterType="com.cis.demosrping.model.OpinionTask">
